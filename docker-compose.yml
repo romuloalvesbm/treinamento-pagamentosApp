@@ -1,0 +1,48 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: pagamentos_sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Coti@2025
+    ports:
+      - "1436:1433"
+    networks:
+      - pagamentos_net
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: pagamentos_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - pagamentos_net
+    restart: unless-stopped
+
+  seq:
+    image: datalust/seq:latest
+    container_name: pagamentos_seq
+    ports:
+       - "5341:80"
+    environment:
+       - ACCEPT_EULA=Y
+       - SEQ_FIRSTRUN_ADMINPASSWORD=Coti@2025
+    networks:
+       - pagamentos_net
+    volumes:
+       - seq_data:/data
+
+networks:
+  pagamentos_net:
+    driver: bridge
+
+volumes:
+  sql_data:
+  seq_data:
+
+
