@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using PagamentosApp.API.Consumers;
 using PagamentosApp.API.Contexts;
+using PagamentosApp.API.Producers;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -27,6 +29,10 @@ Log.Logger = new LoggerConfiguration()
                     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+//Registrando a classe de serviço de segundo plano
+builder.Services.AddHostedService<PagamentoCriadoProducer>();
+builder.Services.AddHostedService<PagamentoCriadoConsumer>();
 
 var app = builder.Build();
 
